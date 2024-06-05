@@ -526,6 +526,10 @@ function renderPopoverArrow(alignment: Alignment, side: Side, element: Element) 
     } else if (elementLeft + elementWidth - popoverWidth / 2 <= 0) {
       arrowSide = "top";
       arrowAlignment = "start";
+
+      if (alignment === 'center' && elementLeft + elementWidth - popoverWidth / 2 > 0) {
+        arrowAlignment = "center";
+      }
     }
     if (elementLeft >= windowWidth) {
       arrowSide = "left";
@@ -533,6 +537,10 @@ function renderPopoverArrow(alignment: Alignment, side: Side, element: Element) 
     } else if (elementLeft + popoverWidth / 2 >= windowWidth) {
       arrowSide = "top";
       arrowAlignment = "end";
+
+      if (alignment === 'center' && elementLeft + popoverWidth / 2 < windowWidth) {
+        arrowAlignment = "center";
+      }
     }
   } else if (side === "bottom") {
     if (elementLeft + elementWidth <= 0) {
@@ -541,6 +549,10 @@ function renderPopoverArrow(alignment: Alignment, side: Side, element: Element) 
     } else if (elementLeft + elementWidth - popoverWidth / 2 <= 0) {
       arrowSide = "bottom";
       arrowAlignment = "start";
+
+      if (alignment === 'center' && elementLeft + elementWidth - popoverWidth / 2 > 0) {
+        arrowAlignment = "center";
+      }
     }
     if (elementLeft >= windowWidth) {
       arrowSide = "left";
@@ -548,6 +560,10 @@ function renderPopoverArrow(alignment: Alignment, side: Side, element: Element) 
     } else if (elementLeft + popoverWidth / 2 >= windowWidth) {
       arrowSide = "bottom";
       arrowAlignment = "end";
+
+      if (alignment === 'center' && elementLeft + popoverWidth / 2 < windowWidth) {
+        arrowAlignment = "center";
+      }
     }
   } else if (side === "left") {
     if (elementTop + elementHeight <= 0) {
@@ -556,6 +572,10 @@ function renderPopoverArrow(alignment: Alignment, side: Side, element: Element) 
     } else if (elementTop + elementHeight - popoverHeight / 2 <= 0) {
       arrowSide = "left";
       arrowAlignment = "start";
+
+      if (alignment === 'center' && elementTop + elementHeight - popoverHeight / 2 > 0) {
+        arrowAlignment = "center";
+      }
     }
 
     if (elementTop >= windowHeight) {
@@ -564,6 +584,10 @@ function renderPopoverArrow(alignment: Alignment, side: Side, element: Element) 
     } else if (elementTop + popoverHeight / 2 >= windowHeight) {
       arrowSide = "left";
       arrowAlignment = "end";
+
+      if (alignment === 'center' && elementTop + popoverHeight / 2 < windowHeight) {
+        arrowAlignment = "center";
+      }
     }
   } else if (side === "right") {
     if (elementTop + elementHeight <= 0) {
@@ -572,6 +596,10 @@ function renderPopoverArrow(alignment: Alignment, side: Side, element: Element) 
     } else if (elementTop + elementHeight - popoverHeight / 2 <= 0) {
       arrowSide = "right";
       arrowAlignment = "start";
+
+      if (alignment === 'center' && elementTop + elementHeight - popoverHeight / 2 > 0) {
+        arrowAlignment = "center";
+      }
     }
 
     if (elementTop >= windowHeight) {
@@ -580,6 +608,10 @@ function renderPopoverArrow(alignment: Alignment, side: Side, element: Element) 
     } else if (elementTop + popoverHeight / 2 >= windowHeight) {
       arrowSide = "right";
       arrowAlignment = "end";
+
+      if (alignment === 'center' && elementTop + popoverHeight / 2 < windowHeight) {
+        arrowAlignment = "center";
+      }
     }
   } else {
   }
@@ -589,6 +621,75 @@ function renderPopoverArrow(alignment: Alignment, side: Side, element: Element) 
   } else {
     popoverArrow.classList.add(`driver-popover-arrow-side-${arrowSide}`);
     popoverArrow.classList.add(`driver-popover-arrow-align-${arrowAlignment}`);
+    calculatePopoverArrowPosition(arrowAlignment, arrowSide, element);
+  }
+}
+
+function calculatePopoverArrowPosition(alignment: Alignment, side: Side, element: Element) {
+  const popover = getState("popover");
+  if (!popover) {
+    return;
+  }
+
+  const elementDimensions = element.getBoundingClientRect();
+  const popoverWrapperDimensions = popover.wrapper.getBoundingClientRect();
+  const popoverArrow = popover.arrow;
+
+  const popoverArrowDimensions = popoverArrow.getBoundingClientRect();
+  const popoverArrowLeft = popoverArrowDimensions.left;
+  const popoverArrowTop = popoverArrowDimensions.top;
+  const popoverArrowWidth = popoverArrowDimensions.width;
+  const popoverArrowHeight = popoverArrowDimensions.height;
+  const popoverArrowJustifyCenter = popoverArrowLeft + popoverArrowWidth / 2;
+  const popoverArrowAlignCenter = popoverArrowTop + popoverArrowHeight / 2;
+
+  const elementWidth = elementDimensions.width;
+  const elementLeft = elementDimensions.left;
+  const elementJustifyCenter = elementLeft + elementWidth / 2;
+
+  const elementTop = elementDimensions.top;
+  const elementHeight = elementDimensions.height;
+  const elementAlignCenter = elementTop + elementHeight / 2;
+
+  /** fix popoverArrow position */
+
+  if (side === 'top' || side === 'bottom') {
+    const isInvalidPosition = popoverArrowJustifyCenter < elementLeft || popoverArrowJustifyCenter > elementLeft + elementWidth;
+    if (alignment === 'start' && isInvalidPosition) {
+      popoverArrow.style.top = '';
+      popoverArrow.style.right = '';
+      popoverArrow.style.bottom = '';
+      popoverArrow.style.left = `${Math.max(15, elementJustifyCenter - popoverArrowWidth / 2 - popoverWrapperDimensions.left)}px`;
+    }
+    if (alignment === 'end' && isInvalidPosition) {
+      popoverArrow.style.top = '';
+      popoverArrow.style.left = '';
+      popoverArrow.style.bottom = '';
+      popoverArrow.style.right = `${Math.max(15, popoverWrapperDimensions.left + popoverWrapperDimensions.width - elementJustifyCenter - popoverArrowWidth / 2)}px`;
+    }
+  }
+
+  if (side === 'left' || side === 'right') {
+    const isInvalidPosition = popoverArrowAlignCenter < elementTop || popoverArrowAlignCenter > elementTop + elementHeight;
+    if (alignment === 'start' && isInvalidPosition) {
+      popoverArrow.style.left = '';
+      popoverArrow.style.right = '';
+      popoverArrow.style.bottom = '';
+      popoverArrow.style.top = `${Math.max(15, elementAlignCenter - popoverArrowHeight / 2 - popoverWrapperDimensions.top)}px`;
+    }
+    if (alignment === 'end' && isInvalidPosition) {
+      popoverArrow.style.top = '';
+      popoverArrow.style.left = '';
+      popoverArrow.style.right = '';
+      popoverArrow.style.bottom = `${Math.max(15, popoverWrapperDimensions.top + popoverWrapperDimensions.height - elementAlignCenter - popoverArrowHeight / 2)}px`;
+    }
+  }
+
+  if (alignment === 'center') {
+    popoverArrow.style.top = '';
+    popoverArrow.style.left = '';
+    popoverArrow.style.right = '';
+    popoverArrow.style.bottom = '';
   }
 }
 
