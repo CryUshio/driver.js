@@ -8,7 +8,7 @@ import { getState, resetState, setState } from "./state";
 import "./driver.css";
 
 export type DriveStep = {
-  element?: string | Element;
+  element?: string | Element | (() => Element);
   onHighlightStarted?: DriverHook;
   onHighlighted?: DriverHook;
   onDeselected?: DriverHook;
@@ -302,7 +302,10 @@ export function driver(options: Config = {}) {
       init();
       drive(stepIndex);
     },
-    setConfig: configure,
+    setConfig: (config: Partial<Config>) => configure({
+      ...getConfig(),
+      ...config,
+    }),
     setSteps: (steps: DriveStep[]) => {
       resetState();
       configure({
