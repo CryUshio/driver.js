@@ -2,7 +2,7 @@
   "name": "@skryu/driver.js",
   "license": "MIT",
   "private": false,
-  "version": "1.5.0",
+  "version": "1.5.1",
   "main": "./dist/driver.js.cjs",
   "module": "./dist/driver.js.mjs",
   "types": "./dist/driver.js.d.ts",
@@ -30,7 +30,8 @@
     "dev": "vite --host",
     "build": "tsc && vite build && dts-bundle-generator --config ./dts-bundle-generator.config.ts",
     "test": "vitest",
-    "format": "prettier . --write"
+    "format": "prettier . --write",
+    "release": "pnpm build && npm publish --access public"
   },
   "files": [
     "!tests/**/*",
