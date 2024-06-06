@@ -5,6 +5,7 @@ import { Config, configure, DriverHook, getConfig } from "./config";
 import { destroyHighlight, highlight } from "./highlight";
 import { destroyEmitter, listen } from "./emitter";
 import { getState, resetState, setState } from "./state";
+import { sleep } from "./utils";
 import "./driver.css";
 
 export type DriveStep = {
@@ -55,7 +56,10 @@ export function driver(options: Config = {}) {
     }
   }
 
-  function moveNext() {
+  async function moveNext() {
+    // waiting for dom render
+    await sleep(0);
+
     const activeIndex = getState("activeIndex");
     const steps = getConfig("steps") || [];
     if (typeof activeIndex === "undefined") {
