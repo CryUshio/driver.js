@@ -29,6 +29,22 @@ export function driver(options: Config = {}) {
   function handleOverlayClick() {
     const overlayClickBehavior = getConfig("overlayClickBehavior");
 
+    const activeIndex = getState("activeIndex");
+    const steps = getConfig("steps") || [];
+    const currentStep = steps[activeIndex || 0];
+    const onOverlayClick = currentStep?.popover?.onOverlayClick;
+
+    if (onOverlayClick || getConfig("onOverlayClick")) {
+      onOverlayClick?.(undefined, currentStep, {
+        config: getConfig(),
+        state: getState(),
+      });
+      getConfig("onOverlayClick")?.(undefined, currentStep, {
+        config: getConfig(),
+        state: getState(),
+      })
+    }
+
     if (getConfig("allowClose") && overlayClickBehavior === "close") {
       destroy();
       return;

@@ -1169,6 +1169,9 @@ npm install driver.js</pre
           animate: true,
           overlayClickBehavior: 'nextStep',
           steps: basicTourSteps,
+          onOverlayClick(el, step) {
+            console.log('overlayClick', step);
+          }
         });
 
         driverObj.drive();

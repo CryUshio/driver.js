@@ -35,6 +35,7 @@ export type Config = {
 
   // Called after the popover is rendered
   onPopoverRender?: (popover: PopoverDOM, opts: { config: Config; state: State }) => void;
+  onOverlayClick?: DriverHook;
 
   // State based callbacks, called upon state changes
   onHighlightStarted?: DriverHook;

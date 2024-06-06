@@ -29,6 +29,7 @@ export type Popover = {
 
   // Called after the popover is rendered
   onPopoverRender?: (popover: PopoverDOM, opts: { config: Config; state: State }) => void;
+  onOverlayClick?: DriverHook;
 
   // Button callbacks
   onNextClick?: DriverHook;
