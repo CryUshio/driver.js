@@ -2,7 +2,7 @@ import { DriveStep } from "./driver";
 import { AllowedButtons, PopoverDOM } from "./popover";
 import { State } from "./state";
 
-export type DriverHook = (element: Element | undefined, step: DriveStep, opts: { config: Config; state: State }) => void;
+export type DriverHook = (element: Element | undefined, step: DriveStep, opts: { config: Config; state: State }) => void | Promise<void>;
 
 export type Config = {
   steps?: DriveStep[];

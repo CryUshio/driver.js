@@ -27,14 +27,14 @@ function mountDummyElement(): Element {
   return element;
 }
 
-export function highlight(step: DriveStep) {
+export async function highlight(step: DriveStep) {
   const { element } = step;
   let elemObj;
 
   if (element instanceof Element) {
     elemObj = element;
   } else {
-    elemObj = typeof element === "string" ? document.querySelector(element) : element?.();
+    elemObj = typeof element === "string" ? document.querySelector(element) : await element?.();
   }
 
   // If the element is not found, we mount a 1px div

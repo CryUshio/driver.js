@@ -5,11 +5,10 @@ import { Config, configure, DriverHook, getConfig } from "./config";
 import { destroyHighlight, highlight } from "./highlight";
 import { destroyEmitter, listen } from "./emitter";
 import { getState, resetState, setState } from "./state";
-import { sleep } from "./utils";
 import "./driver.css";
 
 export type DriveStep = {
-  element?: string | Element | (() => Element);
+  element?: string | Element | (() => Element | Promise<Element>);
   onHighlightStarted?: DriverHook;
   onHighlighted?: DriverHook;
   onDeselected?: DriverHook;
@@ -27,7 +26,7 @@ export function driver(options: Config = {}) {
     destroy();
   }
 
-  function handleOverlayClick() {
+  async function handleOverlayClick() {
     const overlayClickBehavior = getConfig("overlayClickBehavior");
 
     const activeIndex = getState("activeIndex");
@@ -36,11 +35,12 @@ export function driver(options: Config = {}) {
     const onOverlayClick = currentStep?.popover?.onOverlayClick;
 
     if (onOverlayClick || getConfig("onOverlayClick")) {
-      onOverlayClick?.(undefined, currentStep, {
+      // Perhaps you need to wait for the menu to open
+      await onOverlayClick?.(undefined, currentStep, {
         config: getConfig(),
         state: getState(),
       });
-      getConfig("onOverlayClick")?.(undefined, currentStep, {
+      await getConfig("onOverlayClick")?.(undefined, currentStep, {
         config: getConfig(),
         state: getState(),
       })
@@ -56,10 +56,7 @@ export function driver(options: Config = {}) {
     }
   }
 
-  async function moveNext() {
-    // waiting for dom render
-    await sleep(0);
-
+  function moveNext() {
     const activeIndex = getState("activeIndex");
     const steps = getConfig("steps") || [];
     if (typeof activeIndex === "undefined") {
